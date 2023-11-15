@@ -42,10 +42,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.stockhive.ui.theme.Poppin
 
 @Composable
-fun ListItemsScreen() {
+fun ListItemsScreen(navController: NavController) {
 
     val nomeItem by remember {
         mutableStateOf("Nome do Item")
@@ -261,7 +262,9 @@ fun ListItemsScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("list")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -287,7 +290,9 @@ fun ListItemsScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("create")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -313,7 +318,9 @@ fun ListItemsScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("login")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -345,5 +352,4 @@ fun ListItemsScreen() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ListItemsScreenPreview() {
-    ListItemsScreen()
 }

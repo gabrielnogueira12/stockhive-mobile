@@ -42,12 +42,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
 import br.com.fiap.stockhive.ui.theme.Poppin
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
 
     var username by remember {
         mutableStateOf("")
@@ -63,7 +64,10 @@ fun LoginScreen() {
             .background(Color.White),
         contentAlignment = Alignment.Center
     ){
-        Column {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
@@ -164,7 +168,9 @@ fun LoginScreen() {
                                     .background(Color(0x80FCFCFC))
                             ){
                                 Button(
-                                    onClick = { /*TODO*/ },
+                                    onClick = {
+                                        navController.navigate("list")
+                                    },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(
                                         0xFF313131
                                     )
@@ -217,5 +223,4 @@ fun LoginScreen() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
 }

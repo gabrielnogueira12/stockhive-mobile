@@ -41,11 +41,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
 import br.com.fiap.stockhive.ui.theme.Poppin
 
 @Composable
-fun EditItemScreen() {
+fun EditItemScreen(navController: NavController) {
     var nomeItem by remember {
         mutableStateOf("")
     }
@@ -312,7 +313,9 @@ fun EditItemScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("list")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -338,7 +341,9 @@ fun EditItemScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("create")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -364,7 +369,9 @@ fun EditItemScreen() {
                 }
                 Box(
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("login")
+                        }
                 ) {
                     Column(
                         modifier = Modifier
@@ -396,5 +403,4 @@ fun EditItemScreen() {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EditItemScreenPreview() {
-    EditItemScreen()
 }
