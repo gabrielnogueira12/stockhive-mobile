@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.fiap.stockhive.screens.CreateItemScreen
 import br.com.fiap.stockhive.screens.EditItemScreen
+import br.com.fiap.stockhive.screens.ListItemsScreen
 import br.com.fiap.stockhive.screens.LoginScreen
 import br.com.fiap.stockhive.ui.theme.StockHiveTheme
 
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    EditItemScreen()
+                    ListItemsScreen()
                 }
             }
         }
