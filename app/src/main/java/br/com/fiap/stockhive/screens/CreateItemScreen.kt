@@ -1,6 +1,9 @@
 package br.com.fiap.stockhive.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +17,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,6 +64,14 @@ fun CreateItemScreen() {
 
     var tipoItem by remember {
         mutableStateOf("")
+    }
+
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedItem by remember {
+        mutableStateOf("Item 1")
     }
 
     Box(
@@ -123,7 +138,7 @@ fun CreateItemScreen() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
+                ) {
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -186,27 +201,68 @@ fun CreateItemScreen() {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "Tipo",
+                    text = "Selecione o tipo",
                     fontFamily = Poppin,
                     fontSize = 14.sp,
                     modifier = Modifier
                         .padding(start = 10.dp)
                 )
-                OutlinedTextField(
-                    value = tipoItem,
-                    onValueChange = {
-                        tipoItem = it
-                    },
-                    placeholder = {
-                        Text(
-                            text = "Digite o tipo do item",
-                            fontFamily = Poppin
-                        )
-                    },
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                )
+                        .clickable { expanded = true }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                            .border(BorderStroke(
+                                width = 1.dp,
+                                color = Color.Black
+                            )),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text=selectedItem,
+                            modifier = Modifier.padding(5.dp)
+                        )
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    listOf("Item 1", "Item 2", "Item 3").forEach { item ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedItem = item
+                                expanded = false
+                            },
+                            text = {
+                                Text(text = item)
+                            }
+                        )
+                    }
+                }
+//                OutlinedTextField(
+//                    value = tipoItem,
+//                    onValueChange = {
+//                        tipoItem = it
+//                    },
+//                    placeholder = {
+//                        Text(
+//                            text = "Digite o tipo do item",
+//                            fontFamily = Poppin
+//                        )
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 10.dp)
+//                )
 
                 Spacer(modifier = Modifier.height(60.dp))
 
@@ -233,11 +289,12 @@ fun CreateItemScreen() {
                             textAlign = TextAlign.Center
                         )
                     }
+
+                }
+                    }
                 }
             }
         }
-    }
-}
 
 
 @Preview(showBackground = true, showSystemUi = true)

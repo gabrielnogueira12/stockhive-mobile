@@ -45,20 +45,21 @@ fun MenuScreen() {
         contentAlignment = Alignment.Center
     ) {
         Column {
-            Row(
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//
+//            ) {
+//
+//            }
+            Text(
+                text = "STOCK HIVE",
+                textAlign = TextAlign.Center,
+                fontFamily = Poppin,
+                fontSize = 40.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-
-            ) {
-                Text(
-                    text = "STOCK HIVE",
-                    textAlign = TextAlign.Center,
-                    fontFamily = Poppin,
-                    fontSize = 40.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -112,32 +113,6 @@ fun MenuScreen() {
                     }
                 }
             }
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.underimage),
-//                        contentDescription = "Imagem de rodapé",
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(vertical = 20.dp, horizontal = 20.dp)
-//                    )
-//                    Text(
-//                        text = "O mundo não para. \nNós também não.",
-//                        textAlign = TextAlign.Center,
-//                        fontFamily = Poppin,
-//                        fontSize = 16.sp
-//                    )
-//                }
-//            }
         }
     }
 }
