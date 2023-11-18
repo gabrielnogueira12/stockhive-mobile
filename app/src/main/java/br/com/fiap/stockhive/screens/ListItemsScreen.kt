@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,27 +45,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.stockhive.model.Item
+import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun ListItemsScreen(navController: NavController) {
 
-    val nomeItem by remember {
+    var nomeItem by remember {
         mutableStateOf("Nome do Item")
     }
 
-    val qntdItem by remember {
+    var qntdItem by remember {
         mutableStateOf(0)
     }
 
-    val vlrItem by remember {
+    var vlrItem by remember {
         mutableStateOf(0.0)
     }
 
-    val tipoItem by remember {
+    var tipoItem by remember {
         mutableStateOf("Tipo do Item")
     }
 
+    var listItems by remember {
+        mutableStateOf(listOf<Item>())
+    }
+
+    var call = RetrofitFactory().getItemService().getAllItems()
 
     Box(
         modifier = Modifier
@@ -84,147 +96,28 @@ fun ListItemsScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(top = 10.dp)
                 )
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.LightGray),
-                    elevation = CardDefaults.cardElevation(3.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
+                
+                call.enqueue(object : Callback<List<Item>>{
+                    override fun onResponse(
+                        call: Call<List<Item>>,
+                        response: Response<List<Item>>
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "Item:",
-                                    fontFamily = Poppin,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    modifier = Modifier.padding(start = 10.dp, top = 10.dp)
-                                )
-                                Text(
-                                    text = nomeItem,
-                                    fontFamily = Poppin,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(start = 10.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column {
-                                    Text(
-                                        text = "Quantidade:",
-                                        fontFamily = Poppin,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.ExtraBold,
-                                        modifier = Modifier.padding(start = 10.dp)
-                                    )
-                                    Text(
-                                        text = "$qntdItem",
-                                        fontFamily = Poppin,
-                                        fontSize = 18.sp,
-                                        modifier = Modifier.padding(start = 10.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column {
-                                    Text(
-                                        text = "Valor Unitário:",
-                                        fontFamily = Poppin,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.ExtraBold,
-                                        modifier = Modifier.padding(start = 10.dp)
-                                    )
-                                    Text(
-                                        text = "R$$vlrItem",
-                                        fontFamily = Poppin,
-                                        fontSize = 18.sp,
-                                        modifier = Modifier.padding(start = 10.dp)
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Row (
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Text(
-                                    text = "Tipo:",
-                                    fontFamily = Poppin,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    modifier = Modifier.padding(start = 10.dp)
-                                )
-                                Text(
-                                    text = tipoItem,
-                                    fontFamily = Poppin,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(start = 10.dp)
-                                )
-                            }
-                            Row(
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .clickable { }
-                                        .border(
-                                            BorderStroke(
-                                                width = 1.dp,
-                                                color = Color.DarkGray
-                                            ),
-                                            shape = RoundedCornerShape(5.dp)
-                                        )
-                                        .padding(3.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(30.dp)
-                                    )
-                                }
-                                Spacer(modifier=Modifier.width(10.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .clickable { }
-                                        .border(
-                                            BorderStroke(
-                                                width = 1.dp,
-                                                color = Color.Red
-                                            ),
-                                            shape = RoundedCornerShape(5.dp)
-                                        )
-                                        .padding(3.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Clear,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(30.dp),
-                                        tint = Color.Red
-                                    )
-                                }
-                            }
-                        }
+                        listItems = response.body()!!
+                    }
+
+                    override fun onFailure(call: Call<List<Item>>, t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+                
+                LazyColumn(){
+                    items(listItems){
+                        listAllItems(item = it)
                     }
                 }
+
+                
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -232,7 +125,7 @@ fun ListItemsScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.LightGray)
-                    .padding(top=10.dp)
+                    .padding(top = 10.dp)
             ) {
                 Box(
                     modifier = Modifier
@@ -341,6 +234,151 @@ fun ListItemsScreen(navController: NavController) {
                             fontSize = 11.sp,
                             modifier = Modifier
                                 .padding(5.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun listAllItems (item: Item){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray),
+        elevation = CardDefaults.cardElevation(3.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Item:",
+                        fontFamily = Poppin,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                    )
+                    Text(
+                        text = item.nome,
+                        fontFamily = Poppin,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column {
+                        Text(
+                            text = "Quantidade:",
+                            fontFamily = Poppin,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text(
+                            text = "${item.qntd}",
+                            fontFamily = Poppin,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column {
+                        Text(
+                            text = "Valor Unitário:",
+                            fontFamily = Poppin,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text(
+                            text = "R$${item.valorUnitario}",
+                            fontFamily = Poppin,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = "Tipo:",
+                        fontFamily = Poppin,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                    Text(
+                        text = item.tipo,
+                        fontFamily = Poppin,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clickable { }
+                            .border(
+                                BorderStroke(
+                                    width = 1.dp,
+                                    color = Color.DarkGray
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                            .padding(3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    }
+                    Spacer(modifier=Modifier.width(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .clickable { }
+                            .border(
+                                BorderStroke(
+                                    width = 1.dp,
+                                    color = Color.Red
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                            .padding(3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(30.dp),
+                            tint = Color.Red
                         )
                     }
                 }
