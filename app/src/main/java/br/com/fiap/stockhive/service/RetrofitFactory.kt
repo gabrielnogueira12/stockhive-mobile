@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val URL = "http://localhost:3000"
+    private val URL = "http://3.215.181.41:8081"
 
     private val retrofitFactory = Retrofit
         .Builder()
@@ -16,5 +16,10 @@ class RetrofitFactory {
     fun getItemService(): ItemService {
         return retrofitFactory.create(ItemService::class.java)
     }
+
+    fun getLoginService():  LoginService {
+        return  retrofitFactory.create(LoginService::class.java)
+    }
+
 
 }

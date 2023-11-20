@@ -1,5 +1,6 @@
 package br.com.fiap.stockhive.screens
 
+import android.content.ClipData.Item
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -50,10 +51,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
+import br.com.fiap.stockhive.model.NewItem
+import br.com.fiap.stockhive.model.User
+import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
-fun CreateItemScreen(navController: NavController) {
+fun CreateItemScreen(navController: NavController, token: String) {
 
     var nomeItem by remember {
         mutableStateOf("")
@@ -72,8 +79,20 @@ fun CreateItemScreen(navController: NavController) {
     }
 
     var selectedItem by remember {
-        mutableStateOf("Item 1")
+        mutableStateOf("FERRAMENTA")
     }
+
+    val item = NewItem(
+        nome=nomeItem,
+        qntd=qntdItem,
+        valorUnitario=vlrItem,
+        tipo=selectedItem
+    )
+
+    val createItemCall = RetrofitFactory().getItemService().createItem(
+        item = item,
+        token = token
+    )
 
     Box(
         modifier = Modifier
@@ -242,7 +261,7 @@ fun CreateItemScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        listOf("Item 1", "Item 2", "Item 3").forEach { item ->
+                        listOf("FERRAMENTA", "ESCRITÓRIO", "ELETRÔNICO", "PAPELARIA").forEach { item ->
                             DropdownMenuItem(
                                 onClick = {
                                     selectedItem = item
@@ -279,7 +298,23 @@ fun CreateItemScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.Center
                     ){
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                createItemCall.enqueue(object :
+                                    Callback<NewItem>{
+                                    override fun onResponse(
+                                        call: Call<NewItem>,
+                                        response: Response<NewItem>
+                                    ) {
+                                        navController.navigate("list")
+                                    }
+
+                                    override fun onFailure(call: Call<NewItem>, t: Throwable) {
+                                        navController.navigate("create")
+                                    }
+                                })
+
+                                navController.navigate("list/$token")
+                            },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(
                                 0xFF313131
                             )
@@ -336,7 +371,7 @@ fun CreateItemScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("list")
+                            navController.navigate("list/$token")
                         }
                 ) {
                     Column(
@@ -364,7 +399,7 @@ fun CreateItemScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("create")
+                            navController.navigate("create/$token")
                         }
                 ) {
                     Column(

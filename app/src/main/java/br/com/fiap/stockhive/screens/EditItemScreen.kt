@@ -43,20 +43,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
+import br.com.fiap.stockhive.model.Item
+import br.com.fiap.stockhive.model.User
+import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
-fun EditItemScreen(navController: NavController) {
+fun EditItemScreen(navController: NavController, token: String, item: Item) {
+
     var nomeItem by remember {
-        mutableStateOf("")
+        mutableStateOf(item.nome)
     }
 
     var qntdItem by remember {
-        mutableStateOf(0)
+        mutableStateOf(item.qntd)
     }
 
     var vlrItem by remember {
-        mutableStateOf(0.0)
+        mutableStateOf(item.valorUnitario)
     }
 
     var expanded by remember {
@@ -64,8 +71,13 @@ fun EditItemScreen(navController: NavController) {
     }
 
     var selectedItem by remember {
-        mutableStateOf("Item 1")
+        mutableStateOf(item.tipo)
     }
+
+    val updateItemCall = RetrofitFactory().getItemService().updateItem(
+        item = item,
+        token = token
+    )
 
     Box(
         modifier = Modifier
@@ -236,7 +248,7 @@ fun EditItemScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        listOf("Item 1", "Item 2", "Item 3").forEach { item ->
+                        listOf("FERRAMENTA", "ESCRITÓRIO", "ELETRÔNICO", "PAPELARIA").forEach { item ->
                             DropdownMenuItem(
                                 onClick = {
                                     selectedItem = item
@@ -258,7 +270,25 @@ fun EditItemScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.Center
                     ){
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                item.nome = nomeItem
+                                item.qntd = qntdItem
+                                item.valorUnitario = vlrItem
+                                item.tipo = selectedItem
+                                updateItemCall.enqueue(object : Callback<Item>{
+                                    override fun onResponse(
+                                        call: Call<Item>,
+                                        response: Response<Item>
+                                    ) {
+                                        navController.navigate("list/$token")
+                                    }
+
+                                    override fun onFailure(call: Call<Item>, t: Throwable) {
+                                          TODO("Not yet implemented")
+                                    }
+                                })
+
+                            },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(
                                 0xFF313131
                             )
@@ -314,7 +344,7 @@ fun EditItemScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("list")
+                            navController.navigate("list/$token")
                         }
                 ) {
                     Column(
@@ -342,7 +372,7 @@ fun EditItemScreen(navController: NavController) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("create")
+                            navController.navigate("create/$token")
                         }
                 ) {
                     Column(

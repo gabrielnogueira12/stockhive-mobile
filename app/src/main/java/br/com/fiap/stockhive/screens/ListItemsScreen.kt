@@ -45,7 +45,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.stockhive.functions.deleteItem
 import br.com.fiap.stockhive.model.Item
+import br.com.fiap.stockhive.model.User
 import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
 import retrofit2.Call
@@ -53,7 +55,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun ListItemsScreen(navController: NavController) {
+fun ListItemsScreen(navController: NavController, token: String) {
 
     var nomeItem by remember {
         mutableStateOf("Nome do Item")
@@ -75,7 +77,7 @@ fun ListItemsScreen(navController: NavController) {
         mutableStateOf(listOf<Item>())
     }
 
-    var call = RetrofitFactory().getItemService().getAllItems()
+    val call = RetrofitFactory().getItemService().getAllItems(token)
 
     Box(
         modifier = Modifier
@@ -113,7 +115,7 @@ fun ListItemsScreen(navController: NavController) {
                 
                 LazyColumn(){
                     items(listItems){
-                        listAllItems(item = it)
+                        ListAllItems(item = it, navController = navController, token = token)
                     }
                 }
 
@@ -243,7 +245,8 @@ fun ListItemsScreen(navController: NavController) {
 }
 
 @Composable
-fun listAllItems (item: Item){
+fun ListAllItems (item: Item, navController: NavController, token: String){
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,7 +346,11 @@ fun listAllItems (item: Item){
                 ) {
                     Box(
                         modifier = Modifier
-                            .clickable { }
+                            .clickable(
+                                onClick = {
+                                    navController.navigate("edit/${item.cod}")
+                                }
+                            )
                             .border(
                                 BorderStroke(
                                     width = 1.dp,
@@ -363,7 +370,9 @@ fun listAllItems (item: Item){
                     Spacer(modifier=Modifier.width(10.dp))
                     Box(
                         modifier = Modifier
-                            .clickable { }
+                            .clickable {
+                                deleteItem(itemId = item.cod, token = token)
+                            }
                             .border(
                                 BorderStroke(
                                     width = 1.dp,

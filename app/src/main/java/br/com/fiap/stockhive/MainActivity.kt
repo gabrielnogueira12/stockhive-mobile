@@ -13,6 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.stockhive.functions.getItemById
+import br.com.fiap.stockhive.model.Item
+import br.com.fiap.stockhive.model.User
 import br.com.fiap.stockhive.screens.CreateItemScreen
 import br.com.fiap.stockhive.screens.EditItemScreen
 import br.com.fiap.stockhive.screens.ListItemsScreen
@@ -28,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    var item = Item()
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -36,14 +40,27 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login"){
                             LoginScreen(navController)
                         }
-                        composable(route = "list"){
-                            ListItemsScreen(navController)
+                        composable(route = "list/{token}"){backStackEntry ->
+                            var token = backStackEntry.arguments?.getString("token")!!
+                            ListItemsScreen(navController, token)
                         }
-                        composable(route = "edit"){
-                            EditItemScreen(navController)
+                        composable(route = "edit/{itemId}/{token}"){ backStackEntry ->
+                            var itemId = backStackEntry.arguments?.getString("itemId")!!
+                            var token = backStackEntry.arguments?.getString("token")!!
+                            item = getItemById(
+                                itemId = itemId.toInt(),
+                                token = token
+                            )
+
+                            EditItemScreen(
+                                navController,
+                                token,
+                                item
+                            )
                         }
-                        composable(route = "create"){
-                            CreateItemScreen(navController)
+                        composable(route = "create/{token}"){ backStackEntry ->
+                            var token = backStackEntry.arguments?.getString("token")!!
+                            CreateItemScreen(navController, token)
                         }
                     }
 

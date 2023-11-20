@@ -1,5 +1,6 @@
 package br.com.fiap.stockhive.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,18 +8,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,16 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
+import br.com.fiap.stockhive.model.User
+import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @Composable
@@ -57,6 +57,7 @@ fun LoginScreen(navController: NavController) {
     var password by remember {
         mutableStateOf("")
     }
+
 
     Box(
         modifier = Modifier
@@ -169,7 +170,38 @@ fun LoginScreen(navController: NavController) {
                             ){
                                 Button(
                                     onClick = {
-                                        navController.navigate("list")
+                                        val loginUser = User(
+                                            username = username,
+                                            password = password
+                                        )
+                                        val call = RetrofitFactory().getLoginService().login(
+                                            user = loginUser
+                                        )
+
+                                        Log.v("EDYLA", "Chegou no call")
+                                        Log.v("EDYLA", "username: ${loginUser.getUsername()}")
+                                        Log.v("EDYLA", "pass: ${loginUser.getPassword()}")
+
+//                                        call.enqueue(object : Callback<JSONObject>{
+//                                            override fun onResponse(
+//                                                call: Call<JSONObject>,
+//                                                response: Response<JSONObject>
+//                                            ) {
+//                                                Log.v("EDYLA", "Login deu bom")
+//                                                val jsonObj = JSONObject(response.body().toString())
+//                                                loginUser.setToken(jsonObj.getString("token"))
+//                                            }
+//
+//                                            override fun onFailure(call: Call<JSONObject>, t: Throwable) {
+//                                                val msg = t.message!!
+//                                                Log.v("EDYLA", "Deu erro no login")
+//                                                //navController.navigate("login")
+//                                            }
+//
+//                                        })
+                                        navController.navigate("list/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZSIsImlhdCI6MTcwMDUxNDkxOSwiZXhwIjoxNzAwNTE1NjE5fQ.lzPmYy9L-IIE4t_Oy5XWxFohnlwnKt21yJXz2UkRaW_8dBHDKrNcJU-kF1wPNksN9TGiSxrsxPIkSJmD7guVbA")
+                                        // navController.navigate("list/${loginUser.getToken()}")
+
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(
                                         0xFF313131

@@ -1,21 +1,12 @@
 package br.com.fiap.stockhive.model
 
-class Item(
-    var cod: Int=0,
-    var nome: String="",
-    var qntd: Int=0,
-    var tipo: String="",
-    var valorUnitario: Double=0.0
+class NewItem(
+    var nome: String,
+    var qntd: Int,
+    var tipo: String,
+    var valorUnitario: Double
 ){
 
-//    fun getCode(): Int{
-//        return cod
-//    }
-//
-//    fun setCode(newCode: Int) {
-//        cod = newCode
-//    }
-//
 //    fun getNome(): String{
 //        return nome
 //    }
@@ -49,5 +40,3 @@ class Item(
 //    }
 
 }
-
-
