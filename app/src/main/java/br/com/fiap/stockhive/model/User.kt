@@ -1,32 +1,23 @@
 package br.com.fiap.stockhive.model
 
 class User(
-    private var username: String = "",
-    private var password: String = "",
-    private var token: String = ""
+    private var nome: String = "",
+    private var senha: String = ""
 ) {
 
     fun getUsername(): String {
-        return username
+        return nome
     }
 
     fun setUsername(newUsername: String) {
-        username = newUsername
+        nome = newUsername
     }
 
     fun getPassword(): String {
-        return password
+        return senha
     }
 
     fun setPassword(newPassword: String) {
-        password = newPassword
-    }
-
-    fun getToken(): String {
-        return token
-    }
-
-    fun setToken(newToken: String) {
-        token = newToken
+        senha = newPassword
     }
 }

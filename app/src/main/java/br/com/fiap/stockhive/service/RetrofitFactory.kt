@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val URL = "http://3.215.181.41:8081"
+    private val URL = "http://3.215.181.41:8081/stockhive/"
 
     private val retrofitFactory = Retrofit
         .Builder()

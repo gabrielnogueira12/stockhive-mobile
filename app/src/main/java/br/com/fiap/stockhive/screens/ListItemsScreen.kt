@@ -1,5 +1,6 @@
 package br.com.fiap.stockhive.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,7 +56,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun ListItemsScreen(navController: NavController, token: String) {
+fun ListItemsScreen(navController: NavController, token: String, username: String) {
 
     var nomeItem by remember {
         mutableStateOf("Nome do Item")
@@ -77,7 +78,7 @@ fun ListItemsScreen(navController: NavController, token: String) {
         mutableStateOf(listOf<Item>())
     }
 
-    val call = RetrofitFactory().getItemService().getAllItems(token)
+    val call = RetrofitFactory().getItemService().getAllItems(token = token, username = username)
 
     Box(
         modifier = Modifier
@@ -108,14 +109,19 @@ fun ListItemsScreen(navController: NavController, token: String) {
                     }
 
                     override fun onFailure(call: Call<List<Item>>, t: Throwable) {
-                        TODO("Not yet implemented")
+                        Log.v("EDYLA", t.toString())
                     }
 
                 })
                 
                 LazyColumn(){
                     items(listItems){
-                        ListAllItems(item = it, navController = navController, token = token)
+                        ListAllItems(
+                            item = it,
+                            navController = navController,
+                            token = token,
+                            username = username
+                        )
                     }
                 }
 
@@ -245,7 +251,7 @@ fun ListItemsScreen(navController: NavController, token: String) {
 }
 
 @Composable
-fun ListAllItems (item: Item, navController: NavController, token: String){
+fun ListAllItems (item: Item, navController: NavController, token: String, username: String){
 
     Card(
         modifier = Modifier
@@ -295,7 +301,7 @@ fun ListAllItems (item: Item, navController: NavController, token: String){
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text(
-                            text = "${item.qntd}",
+                            text = "${item.quantidade}",
                             fontFamily = Poppin,
                             fontSize = 18.sp,
                             modifier = Modifier.padding(start = 10.dp)
@@ -348,7 +354,7 @@ fun ListAllItems (item: Item, navController: NavController, token: String){
                         modifier = Modifier
                             .clickable(
                                 onClick = {
-                                    navController.navigate("edit/${item.cod}")
+                                    navController.navigate("edit/${item.codigo}/${token}/$username")
                                 }
                             )
                             .border(
@@ -371,7 +377,7 @@ fun ListAllItems (item: Item, navController: NavController, token: String){
                     Box(
                         modifier = Modifier
                             .clickable {
-                                deleteItem(itemId = item.cod, token = token)
+                                deleteItem(itemId = item.codigo, token = token)
                             }
                             .border(
                                 BorderStroke(

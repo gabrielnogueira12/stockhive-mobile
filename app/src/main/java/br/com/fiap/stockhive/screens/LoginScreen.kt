@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.com.fiap.stockhive.R
+import br.com.fiap.stockhive.model.TokenResponse
 import br.com.fiap.stockhive.model.User
 import br.com.fiap.stockhive.service.RetrofitFactory
 import br.com.fiap.stockhive.ui.theme.Poppin
@@ -57,7 +58,6 @@ fun LoginScreen(navController: NavController) {
     var password by remember {
         mutableStateOf("")
     }
-
 
     Box(
         modifier = Modifier
@@ -171,37 +171,30 @@ fun LoginScreen(navController: NavController) {
                                 Button(
                                     onClick = {
                                         val loginUser = User(
-                                            username = username,
-                                            password = password
+                                            nome = username,
+                                            senha = password
                                         )
                                         val call = RetrofitFactory().getLoginService().login(
                                             user = loginUser
                                         )
 
-                                        Log.v("EDYLA", "Chegou no call")
-                                        Log.v("EDYLA", "username: ${loginUser.getUsername()}")
-                                        Log.v("EDYLA", "pass: ${loginUser.getPassword()}")
+                                        call.enqueue(object : Callback<TokenResponse>{
+                                            override fun onResponse(
+                                                call: Call<TokenResponse>,
+                                                response: Response<TokenResponse>
+                                            ) {
+                                                navController.navigate(
+                                                    "list/${response.body()!!.tokenType}${response.body()!!.accessToken}/${loginUser.getUsername()}"
+                                                )
+                                            }
 
-//                                        call.enqueue(object : Callback<JSONObject>{
-//                                            override fun onResponse(
-//                                                call: Call<JSONObject>,
-//                                                response: Response<JSONObject>
-//                                            ) {
-//                                                Log.v("EDYLA", "Login deu bom")
-//                                                val jsonObj = JSONObject(response.body().toString())
-//                                                loginUser.setToken(jsonObj.getString("token"))
-//                                            }
-//
-//                                            override fun onFailure(call: Call<JSONObject>, t: Throwable) {
-//                                                val msg = t.message!!
-//                                                Log.v("EDYLA", "Deu erro no login")
-//                                                //navController.navigate("login")
-//                                            }
-//
-//                                        })
-                                        navController.navigate("list/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0ZSIsImlhdCI6MTcwMDUxNDkxOSwiZXhwIjoxNzAwNTE1NjE5fQ.lzPmYy9L-IIE4t_Oy5XWxFohnlwnKt21yJXz2UkRaW_8dBHDKrNcJU-kF1wPNksN9TGiSxrsxPIkSJmD7guVbA")
-                                        // navController.navigate("list/${loginUser.getToken()}")
+                                            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                                                val msg = t.message!!
+                                                Log.v("EDYLA", msg)
+                                                navController.navigate("login")
+                                            }
 
+                                        })
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(
                                         0xFF313131

@@ -1,6 +1,7 @@
 package br.com.fiap.stockhive
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    var item = Item()
+
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
@@ -40,22 +41,25 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login"){
                             LoginScreen(navController)
                         }
-                        composable(route = "list/{token}"){backStackEntry ->
+                        composable(route = "list/{token}/{username}"){backStackEntry ->
+                            var username = backStackEntry.arguments?.getString("username")!!
                             var token = backStackEntry.arguments?.getString("token")!!
-                            ListItemsScreen(navController, token)
+                            ListItemsScreen(navController, token, username)
                         }
-                        composable(route = "edit/{itemId}/{token}"){ backStackEntry ->
+                        composable(route = "edit/{itemId}/{token}/{username}"){ backStackEntry ->
                             var itemId = backStackEntry.arguments?.getString("itemId")!!
+                            var username = backStackEntry.arguments?.getString("username")!!
                             var token = backStackEntry.arguments?.getString("token")!!
-                            item = getItemById(
-                                itemId = itemId.toInt(),
+                            var item = getItemById(
+                                itemId = itemId,
                                 token = token
                             )
 
                             EditItemScreen(
-                                navController,
-                                token,
-                                item
+                                navController = navController,
+                                token = token,
+                                item = item,
+                                username = username
                             )
                         }
                         composable(route = "create/{token}"){ backStackEntry ->

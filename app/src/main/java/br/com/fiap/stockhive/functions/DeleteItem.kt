@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-fun deleteItem(itemId: Int, token: String){
+fun deleteItem(itemId: String, token: String){
 
     val deleteItemCall = RetrofitFactory().getItemService().deleteItem(
         id = itemId,

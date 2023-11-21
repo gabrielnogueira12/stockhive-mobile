@@ -1,5 +1,6 @@
 package br.com.fiap.stockhive.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,14 +53,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun EditItemScreen(navController: NavController, token: String, item: Item) {
+fun EditItemScreen(navController: NavController, token: String, item: Item, username: String) {
 
     var nomeItem by remember {
         mutableStateOf(item.nome)
     }
 
     var qntdItem by remember {
-        mutableStateOf(item.qntd)
+        mutableStateOf("")
     }
 
     var vlrItem by remember {
@@ -130,9 +131,9 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                             .padding(start = 10.dp)
                     )
                     OutlinedTextField(
-                        value = nomeItem,
+                        value = item.nome,//nomeItem,
                         onValueChange = {
-                            nomeItem = it
+                            item.nome = it
                         },
                         placeholder = {
                             Text(
@@ -162,9 +163,13 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                             )
 
                             OutlinedTextField(
-                                value = "$qntdItem",
+                                value = item.quantidade.toString(),//"$qntdItem",
                                 onValueChange = {
-                                    qntdItem = it.toInt()
+                                    try {
+                                        item.quantidade = it.toInt()
+                                    } catch (e: NumberFormatException) {
+                                        Log.v("EDYLA", "${item.quantidade}")
+                                    }
                                 },
                                 placeholder = {
                                     Text(
@@ -191,9 +196,9 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                             )
 
                             OutlinedTextField(
-                                value = "R$$vlrItem",
+                                value = "${item.valorUnitario}",//"$vlrItem",
                                 onValueChange = {
-                                    vlrItem = it.toDouble()
+                                    item.valorUnitario = it.toDouble()
                                 },
                                 placeholder = {
                                     Text(
@@ -236,7 +241,7 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text=selectedItem,
+                                text=item.tipo,
                                 modifier = Modifier.padding(5.dp)
                             )
                             Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
@@ -248,14 +253,14 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        listOf("FERRAMENTA", "ESCRITÓRIO", "ELETRÔNICO", "PAPELARIA").forEach { item ->
+                        listOf("FERRAMENTA", "ESCRITÓRIO", "ELETRÔNICO", "PAPELARIA").forEach { tipoSel ->
                             DropdownMenuItem(
                                 onClick = {
-                                    selectedItem = item
+                                    item.tipo = tipoSel
                                     expanded = false
                                 },
                                 text = {
-                                    Text(text = item)
+                                    Text(text = tipoSel)
                                 }
                             )
                         }
@@ -271,16 +276,19 @@ fun EditItemScreen(navController: NavController, token: String, item: Item) {
                     ){
                         Button(
                             onClick = {
-                                item.nome = nomeItem
-                                item.qntd = qntdItem
-                                item.valorUnitario = vlrItem
-                                item.tipo = selectedItem
                                 updateItemCall.enqueue(object : Callback<Item>{
                                     override fun onResponse(
                                         call: Call<Item>,
                                         response: Response<Item>
                                     ) {
-                                        navController.navigate("list/$token")
+                                        Log.v("EDYLA", "${item.codigo}")
+                                        Log.v("EDYLA", "${item.nome}")
+                                        Log.v("EDYLA", "${item.quantidade}")
+                                        Log.v("EDYLA", "${item.valorUnitario}")
+                                        Log.v("EDYLA", "${item.tipo}")
+                                        Log.v("EDYLA", "${response.code()}")
+                                        Log.v("EDYLA", "${response}")
+                                        navController.navigate("list/$token/$username")
                                     }
 
                                     override fun onFailure(call: Call<Item>, t: Throwable) {

@@ -16,33 +16,39 @@ import retrofit2.http.Path
 
 interface ItemService {
 
-    @GET("item/list")
+    @GET("item/getItemByUser/{username}")
     fun getAllItems(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
+        @Header("Content-Type") contentType:String = "application/json",
+        @Path("username") username: String
     ): Call<List<Item>>
 
-    @GET("item/{id}")
+    @GET("item/getItem/{id}")
     fun getItemById(
         @Header("Authorization") token: String,
-        @Path("id") id: Int
+        @Header("Content-Type") contentType:String = "application/json",
+        @Path("id") id: String
     ): Call<Item>
 
     @POST("create")
     fun createItem(
         @Header("Authorization") token: String,
+        @Header("Content-Type") contentType:String = "application/json",
         @Body item: NewItem
     ): Call<NewItem>
 
     @PUT("update")
     fun updateItem(
         @Header("Authorization") token: String,
+        @Header("Content-Type") contentType:String = "application/json",
         @Body item: Item
     ): Call<Item>
 
     @DELETE("delete/{id}")
     fun deleteItem(
         @Header("Authorization") token: String,
-        @Path("id") id: Int
+        @Header("Content-Type") contentType:String = "application/json",
+        @Path("id") id: String
     ): Call<Item>
 
 }

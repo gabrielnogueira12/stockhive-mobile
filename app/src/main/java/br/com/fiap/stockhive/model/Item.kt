@@ -1,9 +1,11 @@
 package br.com.fiap.stockhive.model
 
+import com.google.gson.annotations.SerializedName
+
 class Item(
-    var cod: Int=0,
+    var codigo: String,
     var nome: String="",
-    var qntd: Int=0,
+    var quantidade: Int=0,
     var tipo: String="",
     var valorUnitario: Double=0.0
 ){

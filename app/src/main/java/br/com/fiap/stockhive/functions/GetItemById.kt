@@ -1,5 +1,6 @@
 package br.com.fiap.stockhive.functions
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,10 +13,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun getItemById(itemId: Int, token: String): Item {
+fun getItemById(itemId: String, token: String): Item {
 
     var item by remember {
-        mutableStateOf(Item())
+        mutableStateOf(Item(itemId))
     }
 
     val getItemCall = RetrofitFactory().getItemService().getItemById(
