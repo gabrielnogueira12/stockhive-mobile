@@ -2,9 +2,10 @@ package br.com.fiap.stockhive.model
 
 class NewItem(
     var nome: String,
-    var qntd: Int,
+    var quantidade: Int,
     var tipo: String,
-    var valorUnitario: Double
+    var valorUnitario: Double,
+    var usuario: String
 ){
 
 //    fun getNome(): String{

@@ -30,25 +30,25 @@ interface ItemService {
         @Path("id") id: String
     ): Call<Item>
 
-    @POST("create")
+    @POST("item/create")
     fun createItem(
         @Header("Authorization") token: String,
         @Header("Content-Type") contentType:String = "application/json",
         @Body item: NewItem
     ): Call<NewItem>
 
-    @PUT("update")
+    @PUT("item/update")
     fun updateItem(
         @Header("Authorization") token: String,
         @Header("Content-Type") contentType:String = "application/json",
         @Body item: Item
     ): Call<Item>
 
-    @DELETE("delete/{id}")
+    @DELETE("item/delete/{id}")
     fun deleteItem(
         @Header("Authorization") token: String,
         @Header("Content-Type") contentType:String = "application/json",
         @Path("id") id: String
-    ): Call<Item>
+    ): Call<String>
 
 }

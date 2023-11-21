@@ -1,6 +1,7 @@
 package br.com.fiap.stockhive.screens
 
 import android.content.ClipData.Item
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -60,18 +61,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun CreateItemScreen(navController: NavController, token: String) {
+fun CreateItemScreen(navController: NavController, token: String, username: String) {
 
     var nomeItem by remember {
         mutableStateOf("")
     }
 
     var qntdItem by remember {
-        mutableStateOf(0)
+        mutableStateOf("0")
     }
 
     var vlrItem by remember {
-        mutableStateOf(0.0)
+        mutableStateOf("0.0")
     }
 
     var expanded by remember {
@@ -82,17 +83,6 @@ fun CreateItemScreen(navController: NavController, token: String) {
         mutableStateOf("FERRAMENTA")
     }
 
-    val item = NewItem(
-        nome=nomeItem,
-        qntd=qntdItem,
-        valorUnitario=vlrItem,
-        tipo=selectedItem
-    )
-
-    val createItemCall = RetrofitFactory().getItemService().createItem(
-        item = item,
-        token = token
-    )
 
     Box(
         modifier = Modifier
@@ -177,9 +167,9 @@ fun CreateItemScreen(navController: NavController, token: String) {
                             )
 
                             OutlinedTextField(
-                                value = "$qntdItem",
+                                value = qntdItem,
                                 onValueChange = {
-                                    qntdItem = it.toInt()
+                                    qntdItem = it
                                 },
                                 placeholder = {
                                     Text(
@@ -206,9 +196,9 @@ fun CreateItemScreen(navController: NavController, token: String) {
                             )
 
                             OutlinedTextField(
-                                value = "R$$vlrItem",
+                                value = vlrItem,
                                 onValueChange = {
-                                    vlrItem = it.toDouble()
+                                    vlrItem = it
                                 },
                                 placeholder = {
                                     Text(
@@ -299,21 +289,43 @@ fun CreateItemScreen(navController: NavController, token: String) {
                     ){
                         Button(
                             onClick = {
+                                val item = NewItem(
+                                    nome=nomeItem,
+                                    quantidade=qntdItem.toInt(),
+                                    valorUnitario=vlrItem.toDouble(),
+                                    tipo=selectedItem,
+                                    usuario = username
+                                )
+                                Log.v("EDYLA", "Item Criado")
+                                val createItemCall = RetrofitFactory().getItemService().createItem(
+                                    item = item,
+                                    token = token
+                                )
+                                Log.v("EDYLA", "CreateItemCall feito")
                                 createItemCall.enqueue(object :
                                     Callback<NewItem>{
                                     override fun onResponse(
                                         call: Call<NewItem>,
                                         response: Response<NewItem>
                                     ) {
-                                        navController.navigate("list")
+                                        Log.v("EDYLA", "${response.code()}")
+                                        Log.v("EDYLA", response.toString())
+                                        Log.v("EDYLA", response.body()!!.toString())
+                                        Log.v("EDYLA", token)
+                                        Log.v("EDYLA", username)
+
+                                        navController.navigate(
+                                            "list/${token}/${username}"
+                                        )
                                     }
 
                                     override fun onFailure(call: Call<NewItem>, t: Throwable) {
-                                        navController.navigate("create")
+                                        Log.v("EDYLA", t.toString())
+                                        navController.navigate(
+                                            "list/${token}/${username}"
+                                        )
                                     }
                                 })
-
-                                navController.navigate("list/$token")
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(
                                 0xFF313131
@@ -371,7 +383,9 @@ fun CreateItemScreen(navController: NavController, token: String) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("list/$token")
+                            navController.navigate(
+                                "list/${token}/${username}"
+                            )
                         }
                 ) {
                     Column(
@@ -399,7 +413,7 @@ fun CreateItemScreen(navController: NavController, token: String) {
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("create/$token")
+                            navController.navigate("create/$token/$username")
                         }
                 ) {
                     Column(

@@ -56,15 +56,15 @@ import retrofit2.Response
 fun EditItemScreen(navController: NavController, token: String, item: Item, username: String) {
 
     var nomeItem by remember {
-        mutableStateOf(item.nome)
-    }
-
-    var qntdItem by remember {
         mutableStateOf("")
     }
 
+    var qntdItem by remember {
+        mutableStateOf("0")
+    }
+
     var vlrItem by remember {
-        mutableStateOf(item.valorUnitario)
+        mutableStateOf("0.0")
     }
 
     var expanded by remember {
@@ -72,7 +72,7 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
     }
 
     var selectedItem by remember {
-        mutableStateOf(item.tipo)
+        mutableStateOf("-")
     }
 
     val updateItemCall = RetrofitFactory().getItemService().updateItem(
@@ -131,9 +131,9 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                             .padding(start = 10.dp)
                     )
                     OutlinedTextField(
-                        value = item.nome,//nomeItem,
+                        value = nomeItem,//nomeItem,
                         onValueChange = {
-                            item.nome = it
+                            nomeItem = it
                         },
                         placeholder = {
                             Text(
@@ -163,10 +163,10 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                             )
 
                             OutlinedTextField(
-                                value = item.quantidade.toString(),//"$qntdItem",
+                                value = qntdItem,
                                 onValueChange = {
                                     try {
-                                        item.quantidade = it.toInt()
+                                        qntdItem = it
                                     } catch (e: NumberFormatException) {
                                         Log.v("EDYLA", "${item.quantidade}")
                                     }
@@ -196,9 +196,13 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                             )
 
                             OutlinedTextField(
-                                value = "${item.valorUnitario}",//"$vlrItem",
+                                value = vlrItem,
                                 onValueChange = {
-                                    item.valorUnitario = it.toDouble()
+                                    try {
+                                        vlrItem = it
+                                    } catch (e: NumberFormatException) {
+                                        Log.v("EDYLA", "${item.valorUnitario}")
+                                    }
                                 },
                                 placeholder = {
                                     Text(
@@ -241,7 +245,7 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text=item.tipo,
+                                text=selectedItem,
                                 modifier = Modifier.padding(5.dp)
                             )
                             Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
@@ -256,7 +260,8 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                         listOf("FERRAMENTA", "ESCRITÓRIO", "ELETRÔNICO", "PAPELARIA").forEach { tipoSel ->
                             DropdownMenuItem(
                                 onClick = {
-                                    item.tipo = tipoSel
+                                    selectedItem = tipoSel
+
                                     expanded = false
                                 },
                                 text = {
@@ -276,18 +281,16 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                     ){
                         Button(
                             onClick = {
+                                item.nome = nomeItem
+                                item.quantidade = qntdItem.toInt()
+                                item.valorUnitario = vlrItem.toDouble()
+                                item.tipo = selectedItem
+
                                 updateItemCall.enqueue(object : Callback<Item>{
                                     override fun onResponse(
                                         call: Call<Item>,
                                         response: Response<Item>
                                     ) {
-                                        Log.v("EDYLA", "${item.codigo}")
-                                        Log.v("EDYLA", "${item.nome}")
-                                        Log.v("EDYLA", "${item.quantidade}")
-                                        Log.v("EDYLA", "${item.valorUnitario}")
-                                        Log.v("EDYLA", "${item.tipo}")
-                                        Log.v("EDYLA", "${response.code()}")
-                                        Log.v("EDYLA", "${response}")
                                         navController.navigate("list/$token/$username")
                                     }
 
@@ -352,7 +355,7 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("list/$token")
+                            navController.navigate("list/$token/$username")
                         }
                 ) {
                     Column(
@@ -380,7 +383,7 @@ fun EditItemScreen(navController: NavController, token: String, item: Item, user
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("create/$token")
+                            navController.navigate("create/$token/$username")
                         }
                 ) {
                     Column(

@@ -164,7 +164,7 @@ fun ListItemsScreen(navController: NavController, token: String, username: Strin
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("list")
+                            navController.navigate("list/${token}/${username}")
                         }
                 ) {
                     Column(
@@ -192,7 +192,7 @@ fun ListItemsScreen(navController: NavController, token: String, username: Strin
                 Box(
                     modifier = Modifier
                         .clickable {
-                            navController.navigate("create")
+                            navController.navigate("create/${token}/${username}")
                         }
                 ) {
                     Column(
@@ -377,7 +377,15 @@ fun ListAllItems (item: Item, navController: NavController, token: String, usern
                     Box(
                         modifier = Modifier
                             .clickable {
-                                deleteItem(itemId = item.codigo, token = token)
+                                deleteItem(
+                                    token = token,
+                                    itemId = item.codigo,
+                                    navController = navController,
+                                    username = username
+                                )
+                                navController.navigate(
+                                    "list/${token}/${username}"
+                                )
                             }
                             .border(
                                 BorderStroke(

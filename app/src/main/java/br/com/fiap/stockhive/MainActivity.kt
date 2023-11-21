@@ -62,9 +62,10 @@ class MainActivity : ComponentActivity() {
                                 username = username
                             )
                         }
-                        composable(route = "create/{token}"){ backStackEntry ->
+                        composable(route = "create/{token}/{username}"){ backStackEntry ->
+                            var username = backStackEntry.arguments?.getString("username")!!
                             var token = backStackEntry.arguments?.getString("token")!!
-                            CreateItemScreen(navController, token)
+                            CreateItemScreen(navController, token, username)
                         }
                     }
 
